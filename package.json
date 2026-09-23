@@ -1,0 +1,61 @@
+{
+  "name": "shiftguard",
+  "version": "0.0.0",
+  "description": "A timezone-correct shift scheduling constraint engine. It tells you why an assignment is illegal, not just that it is.",
+  "keywords": [
+    "scheduling",
+    "shifts",
+    "rostering",
+    "timezone",
+    "dst",
+    "temporal",
+    "constraints",
+    "validation"
+  ],
+  "author": "Ahsaan Ullah",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahsaanullah0088/shift-guard.git"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "temporal-polyfill": "^1.0.5"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2",
+    "tsup": "^8.5.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  }
+}
