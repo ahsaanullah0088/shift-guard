@@ -32,6 +32,8 @@ export interface TimeAdapter {
   /** Parses an offset-carrying ISO 8601 string. Throws `INVALID_INSTANT` on anything else. */
   toEpochMs(instant: Instant): number
   isValidTimezone(timezone: string): boolean
+  /** The zone's UTC offset at an instant, in minutes. `-480` for Los Angeles in winter. */
+  offsetMinutes(epochMs: number, timezone: string): number
   /** The local calendar date (`YYYY-MM-DD`) of an instant in a zone. */
   localDate(epochMs: number, timezone: string): string
   /** The first instant of a local date. Not always 00:00, and days are not always 24h. */

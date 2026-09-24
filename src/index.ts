@@ -13,6 +13,8 @@ export type { RuleDefinition } from './define-rule'
 
 export { noDoubleBooking } from './rules/no-double-booking'
 export type { DoubleBookingDetail } from './rules/no-double-booking'
+export { minRestBetween } from './rules/min-rest-between'
+export type { MinRestDetail, MinRestOptions } from './rules/min-rest-between'
 
 export { hoursBetween } from './time/duration'
 export { resolveLocal } from './time/resolve-local'

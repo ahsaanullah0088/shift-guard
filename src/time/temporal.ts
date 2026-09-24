@@ -50,6 +50,10 @@ export function createTemporalAdapter(): TimeAdapter {
       }
     },
 
+    offsetMinutes(epochMs: number, timezone: string): number {
+      return zoned(epochMs, timezone).offsetNanoseconds / 60_000_000_000
+    },
+
     localDate(epochMs: number, timezone: string): string {
       return zoned(epochMs, timezone).toPlainDate().toString()
     },

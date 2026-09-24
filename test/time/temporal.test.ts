@@ -65,6 +65,14 @@ describe('local calendar', () => {
     expect((next - start) / 3_600_000).toBe(23)
   })
 
+  it('offsetMinutes reports half-hour, quarter-hour and DST offsets', () => {
+    expect(time.offsetMinutes(Date.UTC(2026, 0, 15), LA)).toBe(-480)
+    expect(time.offsetMinutes(Date.UTC(2026, 6, 15), LA)).toBe(-420)
+    expect(time.offsetMinutes(Date.UTC(2026, 0, 15), 'Asia/Kolkata')).toBe(330)
+    expect(time.offsetMinutes(Date.UTC(2026, 6, 15), 'Pacific/Chatham')).toBe(765)
+    expect(time.offsetMinutes(Date.UTC(2026, 0, 15), 'Pacific/Chatham')).toBe(825)
+  })
+
   it('recognises IANA zones and rejects nonsense', () => {
     expect(time.isValidTimezone(LA)).toBe(true)
     expect(time.isValidTimezone('Pacific/Chatham')).toBe(true)

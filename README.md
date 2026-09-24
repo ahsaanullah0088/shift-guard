@@ -2,7 +2,7 @@
 
 A timezone-correct shift scheduling constraint engine for TypeScript. It tells you **why** an assignment is illegal, not just that it is.
 
-> **Status: pre-release.** The core engine, time layer and `noDoubleBooking` are in place. The other built-in rules are on the way. Nothing is on npm yet.
+> **Status: pre-release.** The core engine, time layer, `noDoubleBooking` and `minRestBetween` are in place. The other built-in rules are on the way. Nothing is on npm yet.
 
 ```ts
 import { createScheduler, noDoubleBooking } from 'shiftguard'
@@ -49,6 +49,40 @@ resolveLocal('2026-03-08T02:30', 'America/Los_Angeles', {
   nonexistent: 'nextValid', // 'previousValid' | 'reject'
   ambiguous: 'earlier',     // 'later' | 'reject'
 }) // "2026-03-08T03:30:00-07:00"
+```
+
+## Rules
+
+| Rule | Enforces |
+|---|---|
+| `noDoubleBooking()` | The candidate must not overlap any existing assignment for the same person. |
+| `minRestBetween({ hours })` | A minimum gap of elapsed real time before **and** after the candidate. |
+
+Rest is measured on the absolute timeline, and the violation says so when the clocks change during it:
+
+```ts
+import { createScheduler, minRestBetween } from 'shiftguard'
+
+const scheduler = createScheduler({
+  timezone: 'America/Los_Angeles',
+  rules: [minRestBetween({ hours: 10 })],
+})
+
+// Sarah finishes at 22:00 on 7 March; the proposed shift starts at 04:00 on 8 March.
+// The labels say 6 hours, but the clocks jump forward that night.
+// → "Sarah Chen finishes at 22:00 on Sat 7 Mar and this shift starts at 04:00 on Sun 8 Mar,
+//    leaving 5 hours of rest (the clocks change in between). The minimum is 10 hours."
+// → detail: { direction: 'before', restHours: 5, minimumHours: 10, shortfallHours: 5,
+//             crossesDstTransition: true, precedingAssignmentId: '…' }
+```
+
+Every rule also accepts `id`, `severity`, `appliesTo` and `message`. Registering a rule twice gives you a hard floor and a softer target:
+
+```ts
+rules: [
+  minRestBetween({ hours: 8 }),
+  minRestBetween({ id: 'preferredRest', hours: 11, severity: 'warning' }),
+]
 ```
 
 ## Results
@@ -102,7 +136,8 @@ To register one rule type more than once, give each instance its own `id`. Overr
 
 - [x] Types, the `TimeAdapter` interface and its Temporal implementation, `resolveLocal`
 - [x] `noDoubleBooking`
-- [ ] `minRestBetween`, `maxShiftLength`, `maxConsecutiveDays`, `maxHoursInWindow`, `requireQualification`, `blackoutPeriods`
+- [x] `minRestBetween`
+- [ ] `maxShiftLength`, `maxConsecutiveDays`, `maxHoursInWindow`, `requireQualification`, `blackoutPeriods`
 - [ ] `checkAll` for batch validation
 - [ ] The DST fixture matrix across nine zones
 - [ ] The indexed `ScheduleIndex`, benchmarks in CI, and the index-equivalence property test
